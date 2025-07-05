@@ -1,18 +1,40 @@
-body {
-      font-family: sans-serif;
-      max-width: 500px;
-      margin: 2em auto;
-      padding: 1em;
-      background: #f5f5f5;
-      border-radius: 8px;
-    }
-    
-    h2 { margin-top: 0; }
-    input, button {
-      padding: 0.5em;
-      margin: 0.5em 0;
-      width: 100%;
-    }
+:root {
+  --oil-black: #0c0c0c;
+  --color: #f1f1f1;
+}
 
-    ul { padding-left: 20px; }
-    .result { margin-top: 1em; background: #fff; padding: 1em; border-radius: 6px; }
+body {
+  font-family: sans-serif;
+  max-width: 500px;
+  margin: 2em auto;
+  padding: 1em;
+  background: var(--oil-black);
+  color: var(--color);
+  border-radius: 8px;
+}
+
+h2 {
+  margin-top: 0;
+}
+input,
+button {
+  padding: 0.5em;
+  margin: 0.5em 0;
+  width: 100%;
+}
+
+ul {
+  padding-left: 20px;
+}
+.result {
+  margin-top: 1em;
+  background: var(--oil-black);
+  outline: solid;
+  color: var(--color);
+  padding: 1em;
+  border-radius: 4px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
+  -o-border-radius: 4px;
+}
