@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Jild - Interest Tracker</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <h2>JILD</h2>
+  <p>Interest Tracker</p>
+
+  <input type="number" id="walletInput" placeholder="Enter current wallet value (€)" />
+  <button onclick="submitValue()">Submit</button>
+  <button onclick="clearHistory()" style="background: #e74c3c; color: white;">🗑️ Clear History</button>
+
+  <div class="result">
+    <p id="lastInterest"></p>
+    <p id="avgInterest"></p>
+    <p id="daysToGoal"></p>
+  </div>
+
+  <h3>History</h3>
+  <ul id="historyList"></ul>
+
+  <script>
+    const goal = 1000000;
+    let history = JSON.parse(localStorage.getItem('walletHistory')) || [];
+
+    function updateDisplay() {
+      const list = document.getElementById('historyList');
+      list.innerHTML = '';
+      history.forEach(entry => {
+        const li = document.createElement('li');
+        li.textContent = `${entry.date}: €${entry.value.toFixed(2)}`;
+        list.appendChild(li);
+      });
+
+      if (history.length < 2) return;
+
+      let interests = [];
+      for (let i = 1; i < history.length; i++) {
+        const today = history[i].value;
+        const yesterday = history[i - 1].value;
+        const rate = ((today / yesterday) - 1) * 100;
+        interests.push(rate);
+      }
+
+      const last = interests[interests.length - 1];
+      const avg = interests.reduce((a, b) => a + b, 0) / interests.length;
+
+      document.getElementById('lastInterest').textContent =
+        `📈 Today's Interest: ${last.toFixed(2)}%`;
+      document.getElementById('avgInterest').textContent =
+        `📊 Average Daily Interest: ${avg.toFixed(2)}%`;
+
+      // Project days to goal
+      let current = history[history.length - 1].value;
+      let days = 0;
+      while (current < goal && avg > 0 && days < 10000) {
+        current *= (1 + avg / 100);
+        days++;
+      }
+
+      document.getElementById('daysToGoal').textContent =
+        `🎯 Estimated Days to Reach €${goal}: ${days}`;
+    }
+
+    function submitValue() {
+      const input = document.getElementById('walletInput');
+      const val = parseFloat(input.value);
+      if (isNaN(val) || val <= 0) return alert('Please enter a valid number.');
+      history.push({ value: val, date: new Date().toISOString().split('T')[0] });
+      localStorage.setItem('walletHistory', JSON.stringify(history));
+      input.value = '';
+      updateDisplay();
+    }
+
+    function clearHistory() {
+      if (confirm('Are you sure you want to delete all history?')) {
+        localStorage.removeItem('walletHistory');
+        history = [];
+        updateDisplay();
+      }
+    }
+
+    updateDisplay();
+  </script>
+
+</body>
+</html>
